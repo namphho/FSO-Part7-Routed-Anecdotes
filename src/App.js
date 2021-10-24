@@ -6,6 +6,7 @@ import {
   useRouteMatch,
   useHistory,
 } from 'react-router-dom'
+import { useField } from './hooks'
 
 const Anecdote = ({ anecdote }) => {
   return (
@@ -90,18 +91,24 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const contentField = useField('text')
+  const authorField = useField('text')
+  const infoField = useField('text')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: contentField.value,
+      author: authorField.value,
+      info: infoField.value,
       votes: 0,
     })
+  }
+
+  const handleReset = () => {
+    contentField.reset()
+    authorField.reset()
+    infoField.reset()
   }
 
   return (
@@ -112,27 +119,33 @@ const CreateNew = (props) => {
           content
           <input
             name='content'
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            value={contentField.value}
+            type={contentField.type}
+            onChange={contentField.onChange}
           />
         </div>
         <div>
           author
           <input
             name='author'
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
+            type={authorField.type}
+            value={authorField.value}
+            onChange={authorField.onChange}
           />
         </div>
         <div>
           url for more info
           <input
             name='info'
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
+            type={infoField.type}
+            value={infoField.value}
+            onChange={infoField.onChange}
           />
         </div>
         <button>create</button>
+        <button type='button' onClick={handleReset}>
+          Reset
+        </button>
       </form>
     </div>
   )
